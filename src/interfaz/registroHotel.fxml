@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23" fx:controller="interfaz.RegistroHotelController">
+   <children>
+      <TextField fx:id="campoNombreHotel" layoutX="282.0" layoutY="24.0" onAction="#IngresarNombreHotel" />
+      <TextField fx:id="campoDireccionHotel" layoutX="283.0" layoutY="68.0" onAction="#IngresarDireccionHotel" />
+      <TextField fx:id="campoCiudadHotel" layoutX="283.0" layoutY="110.0" onAction="#IngresarCiudadHotel" />
+      <TextField fx:id="campoPaisHotel" layoutX="284.0" layoutY="150.0" onAction="#IngresarPaisHotel" />
+      <TextField fx:id="campoHabIndividuales" layoutX="285.0" layoutY="192.0" onAction="#IngresarHabIndividuales" />
+      <TextField fx:id="campoHabDobles" layoutX="286.0" layoutY="236.0" onAction="#IngresarHabDobles" />
+      <TextField fx:id="campoHabTriples" layoutX="287.0" layoutY="273.0" onAction="#IngresarHabTriples" />
+      <TextField fx:id="campoHabSuites" layoutX="288.0" layoutY="310.0" onAction="#IngresarHabSuites" />
+      <Label layoutX="124.0" layoutY="28.0" text="Nombre" />
+      <Label layoutX="124.0" layoutY="72.0" text="Direccion" />
+      <Label layoutX="124.0" layoutY="114.0" text="Ciudad" />
+      <Label layoutX="124.0" layoutY="154.0" text="Pais" />
+      <Label layoutX="124.0" layoutY="196.0" text="Hab. Individuales" />
+      <Label layoutX="124.0" layoutY="240.0" text="Hab. Dobles" />
+      <Label layoutX="124.0" layoutY="277.0" text="Hab. Triples" />
+      <Label layoutX="124.0" layoutY="314.0" text="Hab. Suites" />
+      <Button fx:id="btnGuardar" layoutX="157.0" layoutY="352.0" mnemonicParsing="false" onAction="#GuardarHotel" text="Guardar" />
+      <Button fx:id="btnCancelar" layoutX="331.0" layoutY="352.0" mnemonicParsing="false" onAction="#CancelarHotel" text="Cancelar" />
+   </children>
+</AnchorPane>

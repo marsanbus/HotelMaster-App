@@ -41,7 +41,6 @@ public class LoginController implements Initializable {
     private Button btnNuevoUsuario;
 
     /*private Button btnNuevoHotel;*/
-
     /**
      * Initializes the controller class.
      */
@@ -102,34 +101,60 @@ public class LoginController implements Initializable {
         ConnectionDB conexionBD = new ConnectionDB();
         try {
             conexionBD.openConnection();
-            PreparedStatement statement = conexionBD.getConnection().prepareStatement("SELECT nombre FROM usuarios WHERE nombre = ? AND contraseña = ?");
+
+            // Consulta para verificar nombre y contraseña, y obtener el departamento
+            PreparedStatement statement = conexionBD.getConnection().prepareStatement(
+                    "SELECT departamento FROM trabajadores WHERE nombre = ? AND contraseña = ?");
             statement.setString(1, campoNombre.getText());
             statement.setString(2, campoContraseña.getText());
 
             ResultSet resultado = statement.executeQuery();
 
             if (resultado.next()) {
-                try {
-                    // Cargar el archivo FXML del registro
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("selector.fxml"));
-                    Parent root = fxmlLoader.load();
+                // Obtener el departamento del trabajador
+                String departamento = resultado.getString("departamento");
 
-                    // Crear una nueva ventana (Stage)
-                    Stage stage = new Stage();
-                    stage.setTitle("Selector");
-                    stage.setScene(new Scene(root));
+                // Variable para el archivo FXML a cargar
+                String fxmlFile;
 
-                    // Mostrar la nueva ventana
-                    stage.show();
-
-                    // Cerramos la ventana de Login
-                    Stage loginStage = (Stage) campoNombre.getScene().getWindow();
-                    loginStage.close();
-                    
-                } catch (IOException e) {
-                    e.printStackTrace();
+                // Determinar qué ventana abrir según el departamento
+                switch (departamento) {
+                    case "administracion":
+                        fxmlFile = "selector.fxml";
+                        break;
+                    case "recepcion":
+                        fxmlFile = "recepcion.fxml";
+                        break;
+                    case "limpieza":
+                        fxmlFile = "limpieza.fxml";
+                        break;
+                    case "barra":
+                        fxmlFile = "barra.fxml";
+                        break;
+                    case "sala":
+                        fxmlFile = "sala.fxml";
+                        break;
+                    default:
+                        throw new IllegalStateException("Departamento desconocido: " + departamento);
                 }
+
+                // Cargar el archivo FXML correspondiente
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFile));
+                Parent root = fxmlLoader.load();
+
+                // Crear y mostrar una nueva ventana (Stage)
+                Stage stage = new Stage();
+                stage.setTitle("Panel - " + departamento);
+                stage.setMaximized(true);
+                stage.setScene(new Scene(root));
+                stage.show();
+
+                // Cerrar la ventana de Login
+                Stage loginStage = (Stage) campoNombre.getScene().getWindow();
+                loginStage.close();
+
             } else {
+                // Si no se encuentra el usuario o la contraseña es incorrecta
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("AVISO");
                 alert.setHeaderText("¡ERROR!");
@@ -139,6 +164,8 @@ public class LoginController implements Initializable {
 
         } catch (SQLException ex) {
             java.util.logging.Logger.getLogger(LoginController.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 

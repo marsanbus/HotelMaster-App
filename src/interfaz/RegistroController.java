@@ -143,7 +143,7 @@ public class RegistroController implements Initializable {
                                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                                     alert.setTitle("AVISO");
                                     alert.setHeaderText("CORRECTO");
-                                    alert.setContentText("El alumno se ha agregado correctamente");
+                                    alert.setContentText("El trabajador se ha agregado correctamente");
                                     alert.showAndWait();
                                     Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
                                     stage.close();

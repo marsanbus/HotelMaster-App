@@ -18,6 +18,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import java.sql.ResultSet;
 
 /**
  * FXML Controller class
@@ -29,19 +30,15 @@ public class RegistroController implements Initializable {
     @FXML
     private TextField tfNombre;
     @FXML
-    private TextField tfApellidos;
-    @FXML
-    private TextField tfCorreo;
-    @FXML
     private TextField tfContraseña;
-    @FXML
-    private TextField tfHotel;
     @FXML
     private Button btnAgregar;
     @FXML
     private ComboBox<String> cbDepartamento;
     @FXML
     private Button btnCancelar;
+    @FXML
+    private ComboBox<String> cbHotel;
 
     /**
      * Initializes the controller class.
@@ -49,12 +46,47 @@ public class RegistroController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cbDepartamento.getItems().addAll("Administracion", "Recepcion", "Limpieza", "Barra", "Sala");
+        cargarHoteles();
     }
 
     @FXML
     private void CancelarRegistro(ActionEvent event) {
         Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
         stage.close();
+    }
+
+    private void cargarHoteles() {
+        ConnectionDB conexionBD = new ConnectionDB();
+        try {
+            conexionBD.openConnection();
+            PreparedStatement statement = conexionBD.getConnection().prepareStatement("SELECT nombre FROM hoteles");
+            ResultSet resultado = statement.executeQuery();
+
+            while (resultado.next()) {
+                String nombreHotel = resultado.getString("nombre");
+                cbHotel.getItems().add(nombreHotel);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private int obtenerIdHotel(String nombreHotel) {
+        int idHotel = -1; // Valor por defecto, significa que no se encontró el hotel
+        ConnectionDB conexionBD = new ConnectionDB();
+        try {
+            conexionBD.openConnection();
+            PreparedStatement statement = conexionBD.getConnection().prepareStatement("SELECT id FROM hoteles WHERE nombre = ?");
+            statement.setString(1, nombreHotel);
+            ResultSet resultado = statement.executeQuery();
+
+            if (resultado.next()) {
+                idHotel = resultado.getInt("id");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return idHotel;
     }
 
     @FXML
@@ -66,71 +98,64 @@ public class RegistroController implements Initializable {
             alert.setContentText("El campo del nombre está vacío");
             alert.showAndWait();
         } else {
-            if (tfApellidos.getText().compareTo("") == 0) {
+            if (tfContraseña.getText().compareTo("") == 0) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("AVISO");
                 alert.setHeaderText("¡ERROR!");
-                alert.setContentText("El campo de los apellidos está vacío");
+                alert.setContentText("El campo de la contraseña está vacío");
                 alert.showAndWait();
             } else {
-                if (tfCorreo.getText().compareTo("") == 0) {
+                if (cbHotel.getValue().compareTo("") == 0) {
                     Alert alert = new Alert(Alert.AlertType.WARNING);
                     alert.setTitle("AVISO");
                     alert.setHeaderText("¡ERROR!");
-                    alert.setContentText("El campo del correo está vacío");
+                    alert.setContentText("El departamento no ha sido seleccionado");
                     alert.showAndWait();
                 } else {
-                    if (tfContraseña.getText().compareTo("") == 0) {
+                    if (cbDepartamento.getValue().compareTo("") == 0) {
                         Alert alert = new Alert(Alert.AlertType.WARNING);
                         alert.setTitle("AVISO");
                         alert.setHeaderText("¡ERROR!");
-                        alert.setContentText("El campo de la contraseña está vacío");
+                        alert.setContentText("El departamento no ha sido seleccionado");
                         alert.showAndWait();
                     } else {
-                        if (tfHotel.getText().compareTo("") == 0) {
+                        String nombreHotel = cbHotel.getValue();
+
+                        int idHotel = obtenerIdHotel(nombreHotel);
+
+                        if (idHotel == -1) {
                             Alert alert = new Alert(Alert.AlertType.WARNING);
                             alert.setTitle("AVISO");
                             alert.setHeaderText("¡ERROR!");
-                            alert.setContentText("El campo del hotel está vacío");
+                            alert.setContentText("No se pudo encontrar el id del hotel");
                             alert.showAndWait();
                         } else {
-                            if (cbDepartamento.getValue().compareTo("") == 0) {
-                                Alert alert = new Alert(Alert.AlertType.WARNING);
-                                alert.setTitle("AVISO");
-                                alert.setHeaderText("¡ERROR!");
-                                alert.setContentText("El departamento no ha sido seleccionado");
-                                alert.showAndWait();
-                            } else {
-                                ConnectionDB conexionBD = new ConnectionDB();
-                                try {
-                                    conexionBD.openConnection();
-                                    PreparedStatement statementInsertar = conexionBD.getConnection().prepareStatement("INSERT INTO usuarios (nombre, apellidos, correo, contraseña, rol, departamento, hotel) VALUES (?, ?, ?, ?, empleado, ?, ?)");
-                                    statementInsertar.setString(1, tfNombre.getText());
-                                    statementInsertar.setString(2, tfApellidos.getText());
-                                    statementInsertar.setString(3, tfCorreo.getText());
-                                    statementInsertar.setString(4, tfContraseña.getText());
-                                    statementInsertar.setString(6, tfHotel.getText());
-                                    statementInsertar.setString(7, cbDepartamento.getValue());
-                                    
+                            ConnectionDB conexionBD = new ConnectionDB();
+                            try {
+                                conexionBD.openConnection();
+                                PreparedStatement statementInsertar = conexionBD.getConnection().prepareStatement("INSERT INTO trabajadores (nombre, contraseña, departamento, hotel_id) VALUES (?, ?, ?, ?)");
+                                statementInsertar.setString(1, tfNombre.getText());
+                                statementInsertar.setString(2, tfContraseña.getText());
+                                statementInsertar.setString(3, cbDepartamento.getValue());
+                                statementInsertar.setInt(4, idHotel);
 
-                                    if (statementInsertar.executeUpdate() == 1) {
-                                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                                        alert.setTitle("AVISO");
-                                        alert.setHeaderText("CORRECTO");
-                                        alert.setContentText("El alumno se ha agregado correctamente");
-                                        alert.showAndWait();
-                                        Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-                                        stage.close();
-                                    } else {
-                                        Alert alert = new Alert(Alert.AlertType.ERROR);
-                                        alert.setTitle("AVISO");
-                                        alert.setHeaderText("¡ERROR!");
-                                        alert.setContentText("Alguno de los campos introducidos es incorrecto");
-                                        alert.showAndWait();
-                                    }
-                                } catch (SQLException ex) {
-                                    java.util.logging.Logger.getLogger(RegistroHotelController.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                                if (statementInsertar.executeUpdate() == 1) {
+                                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                    alert.setTitle("AVISO");
+                                    alert.setHeaderText("CORRECTO");
+                                    alert.setContentText("El alumno se ha agregado correctamente");
+                                    alert.showAndWait();
+                                    Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+                                    stage.close();
+                                } else {
+                                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                                    alert.setTitle("AVISO");
+                                    alert.setHeaderText("¡ERROR!");
+                                    alert.setContentText("Alguno de los campos introducidos es incorrecto");
+                                    alert.showAndWait();
                                 }
+                            } catch (SQLException ex) {
+                                java.util.logging.Logger.getLogger(RegistroHotelController.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
                             }
                         }
                     }

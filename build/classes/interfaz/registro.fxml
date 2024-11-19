@@ -8,19 +8,15 @@
 
 <AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="interfaz.RegistroController">
    <children>
-      <TextField fx:id="tfNombre" layoutX="300.0" layoutY="48.0" />
-      <TextField fx:id="tfApellidos" layoutX="301.0" layoutY="92.0" />
-      <TextField fx:id="tfCorreo" layoutX="301.0" layoutY="134.0" />
-      <TextField fx:id="tfContraseña" layoutX="301.0" layoutY="175.0" />
-      <TextField fx:id="tfHotel" layoutX="303.0" layoutY="258.0" />
-      <Label layoutX="123.0" layoutY="52.0" text="Nombre" />
-      <Label layoutX="123.0" layoutY="96.0" text="Apellidos" />
-      <Label layoutX="131.0" layoutY="138.0" text="Correo" />
-      <Label layoutX="117.0" layoutY="179.0" text="Contraseña" />
-      <Label layoutX="131.0" layoutY="222.0" text="Departamento" />
-      <Label layoutX="131.0" layoutY="262.0" text="Hotel" />
-      <Button fx:id="btnAgregar" layoutX="167.0" layoutY="322.0" mnemonicParsing="false" onAction="#AgregarTrabajador" text="Agregar" />
-      <Button fx:id="btnCancelar" layoutX="350.0" layoutY="322.0" mnemonicParsing="false" onAction="#CancelarRegistro" text="Cancelar" />
-      <ComboBox fx:id="cbDepartamento" layoutX="300.0" layoutY="218.0" prefWidth="150.0" />
+      <TextField fx:id="tfNombre" layoutX="300.0" layoutY="50.0" />
+      <TextField fx:id="tfContraseña" layoutX="300.0" layoutY="125.0" />
+      <Label layoutX="123.0" layoutY="50.0" text="Nombre" />
+      <Label layoutX="123.0" layoutY="125.0" text="Contraseña" />
+      <Label layoutX="123.0" layoutY="200.0" text="Departamento" />
+      <Label layoutX="123.0" layoutY="275.0" text="Hotel" />
+      <Button fx:id="btnAgregar" layoutX="150.0" layoutY="350.0" mnemonicParsing="false" onAction="#AgregarTrabajador" text="Agregar" />
+      <Button fx:id="btnCancelar" layoutX="350.0" layoutY="350.0" mnemonicParsing="false" onAction="#CancelarRegistro" text="Cancelar" />
+      <ComboBox fx:id="cbDepartamento" layoutX="300.0" layoutY="200.0" prefWidth="150.0" />
+      <ComboBox fx:id="cbHotel" layoutX="300.0" layoutY="275.0" prefWidth="150.0" />
    </children>
 </AnchorPane>
